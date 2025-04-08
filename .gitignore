@@ -1,0 +1,10 @@
+# compiled objects
+*.so
+*.o
+tmp.R
+# emacs temporary files
+\#*#
+*~
+progress.txt
+# R objects
+*.RData
