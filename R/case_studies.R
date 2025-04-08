@@ -10,18 +10,8 @@
 library(ggplot2); theme_set(theme_bw())
 library(viridis)
 
-## US data
-timeseries <- read.csv("../data/AllStockData.csv")
-## merge in the Celtic Seas
-cs_dat <- read.csv("../data/SR_CSEdata.csv")
-names(cs_dat)[names(cs_dat) == "StockKeyLabel"] <- "ID"
-names(cs_dat)[names(cs_dat) == "Recruitment"] <- "Recruits"
-cs_dat$ComName <- NA
-cs_dat$Region <- "6. Celtic Seas"
-names(timeseries) %in% names(cs_dat)
-timeseries <- rbind(timeseries, cs_dat[, names(timeseries)])
-
-timeseries <- subset(timeseries, !is.na(SSB) & !is.na(Recruits))
+## read in the data
+timeseries <- read.csv("case_studies_data.csv")
 
 regions <- unique(timeseries$Region)
 regions <- regions[order(regions)]
