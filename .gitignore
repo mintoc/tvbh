@@ -8,3 +8,4 @@ tmp.R
 progress.txt
 # R objects
 *.RData
+.Rhistory
