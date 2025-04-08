@@ -1,5 +1,5 @@
-// A template for building a general non-linear Gaussian state space model
-// Here we define a logarithmic univariate growth model (see vignette growth_model)
+// Time-varying Beverton-Holt code for bssm
+// uses the template code from Jouni Helske "Non-linear models with bssm" vignette
 
 #include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -14,7 +14,6 @@
 // [[Rcpp::export]]
 arma::vec a1_fn(const arma::vec& theta, const arma::vec& known_params) {
   arma::vec a1(2);
-  //arma::vec a1 = arma::vec(2).fill(0.);
   a1(0) = known_params(0);
   a1(1) = known_params(1);
   return a1;
@@ -23,7 +22,6 @@ arma::vec a1_fn(const arma::vec& theta, const arma::vec& known_params) {
 // [[Rcpp::export]]
 arma::mat P1_fn(const arma::vec& theta, const arma::vec& known_params) {
   arma::mat P1(2, 2, arma::fill::zeros);
-  //arma::mat P1 = arma::mat(2,2).fill(0.);
   P1(0,0) = known_params(2);
   P1(1,1) = known_params(3);
   return P1;
@@ -34,7 +32,6 @@ arma::mat P1_fn(const arma::vec& theta, const arma::vec& known_params) {
 arma::mat H_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& theta, 
   const arma::vec& known_params, const arma::mat& known_tv_params) {
   arma::mat H(1,1);
-  //arma::mat H = arma::mat(1,1).fill(0.);
   H(0, 0) = exp(theta(0));
   return H;
 }
@@ -44,9 +41,6 @@ arma::mat H_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& th
 arma::mat R0_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& theta, 
   const arma::vec& known_params, const arma::mat& known_tv_params) {
   arma::mat R(2, 2, arma::fill::zeros);
-  //arma::mat R = arma::mat(2,2).fill(0.);
-  //R(0, 0) = exp(theta(1));
-  //R(1, 1) = exp(theta(2)); 
   return R;
 }
 
@@ -55,9 +49,7 @@ arma::mat R0_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& t
 arma::mat R1_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& theta, 
   const arma::vec& known_params, const arma::mat& known_tv_params) {
   arma::mat R(2, 2, arma::fill::zeros);
-  //arma::mat R = arma::mat(2,2).fill(0.);
   R(0, 0) = exp(theta(1));
-  //R(1, 1) = exp(theta(2)); 
   return R;
 }
 
@@ -66,9 +58,7 @@ arma::mat R1_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& t
 arma::mat R2_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& theta, 
   const arma::vec& known_params, const arma::mat& known_tv_params) {
   arma::mat R(2, 2, arma::fill::zeros);
-  //arma::mat R = arma::mat(2,2).fill(0.);
   R(1, 1) = exp(theta(1));
-  //R(1, 1) = exp(theta(2)); 
   return R;
 }
 
@@ -77,12 +67,6 @@ arma::mat R2_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& t
 // [[Rcpp::export]]
 arma::vec Z_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& theta, 
   const arma::vec& known_params, const arma::mat& known_tv_params) {
-  //arma::vec q = arma::vec(1).fill(0.);
-  //arma::vec p = arma::vec(1).fill(0.);
-  //arma::vec tau = arma::vec(1).fill(0.);
-  //arma::vec fec = arma::vec(1).fill(0.);
-  //arma::vec S = arma::vec(1).fill(0.);
-  //arma::vec tmp = arma::vec(1).fill(0.);  
   arma::vec q(1);
   arma::vec p(1);
   arma::vec tau(1);  
@@ -102,14 +86,6 @@ arma::vec Z_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& th
 // [[Rcpp::export]]
 arma::mat Z_gn(const unsigned int t, const arma::vec& alpha, const arma::vec& theta, 
   const arma::vec& known_params, const arma::mat& known_tv_params) {
-  //arma::vec lnq = arma::vec(1).fill(0.);
-  //arma::vec lnp = arma::vec(1).fill(0.);
-  //arma::vec q = arma::vec(1).fill(0.);
-  //arma::vec p = arma::vec(1).fill(0.);
-  //arma::vec tau = arma::vec(1).fill(0.);
-  //arma::vec fec = arma::vec(1).fill(0.);
-  //arma::vec tmp = arma::vec(1).fill(0.);
-  //arma::vec S = arma::vec(1).fill(0.);  
   arma::vec lnq(1);
   arma::vec lnp(1);
   arma::vec q(1);
@@ -132,7 +108,6 @@ arma::mat Z_gn(const unsigned int t, const arma::vec& alpha, const arma::vec& th
   arma::vec ddlnp(1);
   ddlnp(0) = -(exp(lnp(0) - lnq(0)) * (exp(exp(lnq(0))) - 1.0))/(exp(lnp(0) - lnq(0)) * (exp(exp(lnq(0))) - 1.0) + exp(exp(lnq(0)))/(S(0) * fec(0)));
   //
-  //arma::mat Z_gn = arma::mat(1,2).fill(0.);  
   arma::mat Z_gn(1, 2);
   //
   Z_gn(0, 0) = ddlnq(0);
@@ -144,7 +119,6 @@ arma::mat Z_gn(const unsigned int t, const arma::vec& alpha, const arma::vec& th
 // [[Rcpp::export]]
 arma::vec T_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& theta, 
   const arma::vec& known_params, const arma::mat& known_tv_params) {
-  //arma::vec alpha_new = arma::vec(2).fill(0.);
   arma::vec alpha_new(2);
   alpha_new(0) = alpha(0);
   alpha_new(1) = alpha(1);
@@ -155,7 +129,6 @@ arma::vec T_fn(const unsigned int t, const arma::vec& alpha, const arma::vec& th
 // [[Rcpp::export]]
 arma::mat T_gn(const unsigned int t, const arma::vec& alpha, const arma::vec& theta, 
   const arma::vec& known_params, const arma::mat& known_tv_params) {
-  //arma::mat Tg = arma::mat(2,2).fill(0.);
   arma::mat Tg(2, 2);
   Tg(0, 0) = 1.0;
   Tg(0, 1) = 0;
