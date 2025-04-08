@@ -163,9 +163,6 @@ dev.off()
 ## load in the estimation code for eKF and TMB
 source("utils.R")
 
-## for confidence intervals
-beta <- matrix(c(1, 0, 1, -2, 1, 2), nr = 2)
-
 ## BSSM code
 library(bssm)
 library(dplyr)
